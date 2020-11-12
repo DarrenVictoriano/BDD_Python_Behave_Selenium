@@ -5,17 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-@given('1 launch chrome browser')
-def launch_browser(context):
-    context.driver = webdriver.Chrome(
-        executable_path=os.getenv("CHROME_DRIVER_PATH"))
-
-
-@when('1 open orangehrm homepage')
-def open_homepage(context):
-    context.driver.get("https://opensource-demo.orangehrmlive.com")
-
-
 @when('enter username and password')
 def enter_credentials(context):
     context.driver.find_element_by_id(
@@ -31,11 +20,17 @@ def click_login_btn(context):
 
 @then('user should successfully login to the Dashboard page')
 def verify_login(context):
-    text = context.driver.find_element_by_xpath(
-        "//h1[contains(text(),'Dashboard')]").text
+    try:
+        text = context.driver.find_element_by_xpath(
+            "//h1[contains(text(),'Dashboard')]").text
+    except:
+        assert False, "Login Failed"
     assert text == "Dashboard"
 
 
-@then('close the browser')
-def close_browser(context):
-    context.driver.close()
+@when('enter username "{username}" and password "{password}"')
+def enter_credential_examples(context, username, password):
+    context.driver.find_element_by_id(
+        "txtUsername").send_keys(username)
+    context.driver.find_element_by_id(
+        "txtPassword").send_keys(password)
