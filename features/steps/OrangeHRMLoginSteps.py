@@ -5,12 +5,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-@when('enter username and password')
-def enter_credentials(context):
+@when('enter valid username "{user}" and password "{pwd}"')
+def enter_credentials(context, user, pwd):
     context.driver.find_element_by_id(
-        "txtUsername").send_keys(os.getenv("USERNAME"))
+        "txtUsername").send_keys(user)
     context.driver.find_element_by_id(
-        "txtPassword").send_keys(os.getenv("PASSWORD"))
+        "txtPassword").send_keys(pwd)
+
+
+@when('enter username "{username}" and password "{password}"')
+def enter_credential_examples(context, username, password):
+    context.driver.find_element_by_id(
+        "txtUsername").send_keys(username)
+    context.driver.find_element_by_id(
+        "txtPassword").send_keys(password)
 
 
 @when('click on login button')
@@ -26,11 +34,3 @@ def verify_login(context):
     except:
         assert False, "Login Failed"
     assert text == "Dashboard"
-
-
-@when('enter username "{username}" and password "{password}"')
-def enter_credential_examples(context, username, password):
-    context.driver.find_element_by_id(
-        "txtUsername").send_keys(username)
-    context.driver.find_element_by_id(
-        "txtPassword").send_keys(password)
